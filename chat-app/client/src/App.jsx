@@ -1,9 +1,14 @@
-import './App.css'
+import { io } from "socket.io-client";
+import "./App.css";
 
 const App = () => {
-return (
-  <></>
-)
-}
+  const socket = io("http://localhost:3000");
 
-export default App
+  socket.on("connect", () => {
+    console.log(socket.id);
+  });
+
+  return <></>;
+};
+
+export default App;
