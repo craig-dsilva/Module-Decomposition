@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useSocket from "./hooks/useSocket";
+import "./App.css";
 
 export default function App() {
   const { messages, sendMessage } = useSocket("http://localhost:3000");
@@ -10,16 +11,26 @@ export default function App() {
     sendMessage(input.trim());
     setInput("");
   };
-  
+
   return (
-    <div>
-      <ul>
-        {messages.map((msg, i) => (
-          <li key={i}>{msg.text}</li>
+    <div className="container">
+      <ul className="messages">
+        {messages.map((message, i) => (
+          <li className="message" key={i}>
+            {message.text}
+          </li>
         ))}
       </ul>
-      <input value={input} onChange={(e) => setInput(e.target.value)} />
-      <button onClick={handleSend}>Send</button>
+      <div className="chat-box">
+        <input
+          className="chat-input"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+        <button className="send-button" onClick={handleSend}>
+          Send
+        </button>
+      </div>
     </div>
   );
 }
