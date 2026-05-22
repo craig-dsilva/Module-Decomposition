@@ -2,7 +2,7 @@ import { useState } from "react";
 import useSocket from "./hooks/useSocket";
 import "./App.css";
 
-export default function App() {
+const App = () => {
   const { messages, sendMessage } = useSocket("http://localhost:3000");
   const [input, setInput] = useState("");
 
@@ -33,4 +33,6 @@ export default function App() {
       </div>
     </div>
   );
-}
+};
+
+export default App;
