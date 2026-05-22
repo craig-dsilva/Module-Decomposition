@@ -1,16 +1,25 @@
-import { io } from "socket.io-client";
-import "./App.css";
+import { useState } from "react";
+import useSocket from "./hooks/useSocket";
 
-const App = () => {
-  const socket = io("http://localhost:3000");
+export default function App() {
+  const { messages, sendMessage } = useSocket("http://localhost:3000");
+  const [input, setInput] = useState("");
 
-  socket.on("connect", () => {
-    console.log(socket.id);
-  });
-
-  socket.on("message", (data) => console.log(data));
-
-  return <></>;
-};
-
-export default App;
+  const handleSend = () => {
+    if (!input.trim()) return;
+    sendMessage(input.trim());
+    setInput("");
+  };
+  
+  return (
+    <div>
+      <ul>
+        {messages.map((msg, i) => (
+          <li key={i}>{msg.text}</li>
+        ))}
+      </ul>
+      <input value={input} onChange={(e) => setInput(e.target.value)} />
+      <button onClick={handleSend}>Send</button>
+    </div>
+  );
+}
