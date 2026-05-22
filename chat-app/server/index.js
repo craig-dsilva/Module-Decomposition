@@ -10,11 +10,17 @@ const io = new Server(server, {
   },
 });
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello world</h1>');
-});
+io.on('connection', (socket) => {
+  console.log(`Client connected: ${socket.id}`);
 
-io.on('connection', (socket) => console.log('a user is connected'));
+  socket.on('message', ({ from, message }) => {
+    socket.broadcast.emit('message', { from, message });
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`Client disconnected: ${socket.id}`);
+  });
+});
 
 server.listen(3000, () => {
   console.log('server running at http://localhost:3000');
