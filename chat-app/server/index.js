@@ -1,6 +1,7 @@
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import chat from './data/chat.json' with { type: 'json' };
 
 const app = express();
 const server = createServer(app);
@@ -11,14 +12,11 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-  console.log(`Client connected: ${socket.id}`);
+  socket.emit('history', chat);
 
-  socket.on('message', ({ from, message }) => {
-    socket.broadcast.emit('message', { from, message });
-  });
-
-  socket.on('disconnect', () => {
-    console.log(`Client disconnected: ${socket.id}`);
+  socket.on('message', (msg) => {
+    chat.push(msg);
+    socket.broadcast.emit('message', msg);
   });
 });
 
