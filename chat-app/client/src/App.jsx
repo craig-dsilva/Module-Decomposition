@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useSocket from "./hooks/useSocket";
+import Message from "./components/Message";
 import "./App.css";
 
 const App = () => {
@@ -15,10 +16,8 @@ const App = () => {
   return (
     <div className="container">
       <ul className="messages">
-        {messages.map((message, i) => (
-          <li className="message" key={i}>
-            {message.text}
-          </li>
+        {messages.map((message) => (
+          <Message message={message.text} time={message.time} />
         ))}
       </ul>
       <div className="chat-box">
