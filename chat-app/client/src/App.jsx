@@ -1,16 +1,38 @@
-import { io } from "socket.io-client";
+import { useState } from "react";
+import useSocket from "./hooks/useSocket";
 import "./App.css";
 
 const App = () => {
-  const socket = io("http://localhost:3000");
+  const { messages, sendMessage } = useSocket("http://localhost:3000");
+  const [input, setInput] = useState("");
 
-  socket.on("connect", () => {
-    console.log(socket.id);
-  });
+  const handleSend = () => {
+    if (!input.trim()) return;
+    sendMessage(input.trim());
+    setInput("");
+  };
 
-  socket.on("message", (data) => console.log(data));
-
-  return <></>;
+  return (
+    <div className="container">
+      <ul className="messages">
+        {messages.map((message, i) => (
+          <li className="message" key={i}>
+            {message.text}
+          </li>
+        ))}
+      </ul>
+      <div className="chat-box">
+        <input
+          className="chat-input"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+        <button className="send-button" onClick={handleSend}>
+          Send
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default App;
