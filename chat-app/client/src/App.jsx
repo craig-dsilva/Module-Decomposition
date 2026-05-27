@@ -17,7 +17,7 @@ const App = () => {
     <div className="container">
       <ul className="messages">
         {messages.map((message) => (
-          <Message message={message.text} time={message.time} />
+          <Message message={message.text} messageTime={message.time} />
         ))}
       </ul>
       <div className="chat-box">
