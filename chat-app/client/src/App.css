@@ -2,10 +2,6 @@
   list-style: none;
 }
 
-.message {
-  margin-bottom: 0.5em;
-}
-
 .chat-box {
   position: fixed;
   bottom: 0;

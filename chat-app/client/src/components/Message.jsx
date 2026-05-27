@@ -1,4 +1,5 @@
 import formatTime from "../utils/formatTime";
+import "./Message.css"
 
 const Message = ({ message, messageTime }) => {
   const { date, time } = formatTime(messageTime);
