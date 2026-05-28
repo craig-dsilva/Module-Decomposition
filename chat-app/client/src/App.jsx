@@ -4,7 +4,9 @@ import Message from "./components/Message";
 import "./App.css";
 
 const App = () => {
-  const { messages, sendMessage } = useSocket("http://localhost:3000");
+  const { messages, sendMessage } = useSocket(
+    "https://craig-dsilva-chat-app-server.hosting.codeyourfuture.io/",
+  );
   const [input, setInput] = useState("");
 
   const handleSend = () => {
