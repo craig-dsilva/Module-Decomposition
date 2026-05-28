@@ -11,6 +11,8 @@ const io = new Server(server, {
   },
 });
 
+app.get('/healthcheck', (req, res) => res.send('Server is running'));
+
 io.on('connection', (socket) => {
   socket.emit('history', chat);
 
