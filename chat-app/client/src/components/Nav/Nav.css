@@ -1,0 +1,19 @@
+.nav {
+  text-align: center;
+}
+
+.nav a {
+  color: #000;
+  text-decoration: none;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  font-size: 2rem;
+  margin: 10% 25%;
+}
+
+.bar {
+  font-size: 2rem;
+}
