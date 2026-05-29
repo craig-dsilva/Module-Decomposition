@@ -6,7 +6,7 @@
 }
 
 .message-text,
-.message-time {
+.message-info {
   margin: 0;
 }
 
@@ -14,6 +14,18 @@
   font-size: large;
 }
 
-.message-time {
+.message-info {
   font-size: small;
+  display: flex;
+  justify-content: space-around;
+}
+
+.message-like {
+  display: flex;
+}
+
+.like-button {
+  border: none;
+  background-color: #fff;
+  font-size: 1.5rem;
 }

@@ -1,18 +1,26 @@
 [
   {
     "text": "Hello",
-    "time": "2026-05-22T14:53:00.281Z"
+    "time": "2026-05-22T14:53:00.281Z",
+    "likes": 0,
+    "dislikes": 0
   },
   {
     "text": "How are you?",
-    "time": "2026-05-22T14:54:49.729Z"
+    "time": "2026-05-22T14:54:49.729Z",
+    "likes": 0,
+    "dislikes": 0
   },
   {
     "text": "I'm good. How are you?",
-    "time": "2026-05-22T14:55:22.839Z"
+    "time": "2026-05-22T14:55:22.839Z",
+    "likes": 0,
+    "dislikes": 0
   },
   {
     "text": "I'm not too bad",
-    "time": "2026-05-22T14:55:54.424Z"
+    "time": "2026-05-22T14:55:54.424Z",
+    "likes": 0,
+    "dislikes": 0
   }
 ]

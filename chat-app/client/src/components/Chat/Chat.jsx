@@ -15,7 +15,12 @@ const Chat = ({ messages, sendMessage }) => {
     <div className="container">
       <ul className="messages">
         {messages.map((message) => (
-          <Message message={message.text} messageTime={message.time} />
+          <Message
+            message={message.text}
+            messageTime={message.time}
+            likes={message.likes}
+            dislikes={message.dislikes}
+          />
         ))}
       </ul>
       <div className="chat-box">
