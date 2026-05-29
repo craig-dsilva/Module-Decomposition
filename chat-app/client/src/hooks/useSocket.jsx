@@ -9,26 +9,38 @@ const useSocket = (url) => {
     socketRef.current = io(url);
 
     socketRef.current.on("history", (history) => {
-      setMessages(history.map((message) => ({ ...message })));
+      setMessages(history);
     });
 
-    socketRef.current.on("message", (message) => {
-      setMessages((prev) => [...prev, message]);
+    socketRef.current.on("message", (msg) => {
+      setMessages((prev) => [...prev, msg]);
+    });
+
+    socketRef.current.on("react", ({ index, type, value }) => {
+      setMessages((prev) =>
+        prev.map((msg, i) => (i === index ? { ...msg, [type]: value } : msg)),
+      );
     });
 
     return () => socketRef.current.disconnect();
   }, [url]);
 
   const sendMessage = (text) => {
-    const message = {
-      text,
-      time: new Date().toISOString(),
-    };
-    socketRef.current.emit("message", message);
-    setMessages((prev) => [...prev, { ...message }]);
+    const msg = { text, time: new Date().toISOString(), likes: 0, dislikes: 0 };
+    socketRef.current.emit("message", msg);
+    setMessages((prev) => [...prev, { ...msg, self: true }]);
   };
 
-  return { messages, sendMessage };
+  const reactToMessage = (index, type) => {
+    setMessages((prev) =>
+      prev.map((msg, i) =>
+        i === index ? { ...msg, [type]: msg[type] + 1 } : msg,
+      ),
+    );
+    socketRef.current.emit("react", { index, type });
+  };
+
+  return { messages, sendMessage, reactToMessage };
 };
 
 export default useSocket;

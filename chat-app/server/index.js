@@ -1,86 +1,107 @@
 import express from 'express';
+import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import cors from 'cors';
 import chat from './data/chat.json' with { type: 'json' };
 
 const app = express();
-const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: '*',
-  },
-});
-
-const socketChat = [...chat];
-const pollChat = [...chat];
-
-let lastMessageIndex = 0;
-const pollClients = [];
+const httpServer = createServer(app);
+const io = new Server(httpServer, { cors: { origin: '*' } });
 
 app.use(cors());
+app.use(express.json());
 
-app.get('/healthcheck', (req, res) => res.send('Server is running'));
+const pollStore = { messages: JSON.parse(JSON.stringify(chat)), clients: [] };
+const socketStore = { messages: JSON.parse(JSON.stringify(chat)) };
 
-app.get('/history', (req, res) => {
-  res.json(pollChat);
+app.get('/poll/history', (req, res) => {
+  res.json(pollStore.messages);
 });
 
 app.get('/poll', (req, res) => {
-  const clientLastIndex = parseInt(req.query.lastIndex) || 0;
+  const since = parseInt(req.query.since) || 0;
+  const newMessages = pollStore.messages.filter((_, i) => i >= since);
 
-  if (pollChat.length > clientLastIndex) {
+  if (newMessages.length > 0) {
     return res.json({
-      messages: pollChat.slice(clientLastIndex),
-      lastIndex: pollChat.length,
+      messages: newMessages,
+      cursor: pollStore.messages.length,
     });
   }
 
-  const timeoutId = setTimeout(() => {
-    const index = pollClients.indexOf(timeoutId);
-    if (index > -1) {
-      pollClients.splice(index, 1);
-    }
-    res.json({
-      messages: [],
-      lastIndex: pollChat.length,
-    });
-  }, 30000);
+  pollStore.clients.push({ res });
 
-  pollClients.push(timeoutId);
-
-  res.on('close', () => {
-    const index = pollClients.indexOf(timeoutId);
-    if (index > -1) {
-      pollClients.splice(index, 1);
-      clearTimeout(timeoutId);
-    }
+  req.on('close', () => {
+    const i = pollStore.clients.findIndex((c) => c.res === res);
+    if (i !== -1) pollStore.clients.splice(i, 1);
   });
+
+  setTimeout(() => {
+    const i = pollStore.clients.findIndex((c) => c.res === res);
+    if (i !== -1) {
+      pollStore.clients.splice(i, 1);
+      res.json({ messages: [], cursor: since });
+    }
+  }, 30000);
 });
 
-app.post('/message', express.json(), (req, res) => {
+app.post('/poll/message', (req, res) => {
   const msg = req.body;
-  pollChat.push(msg);
+  pollStore.messages.push(msg);
+  pollStore.clients.forEach(({ res }) =>
+    res.json({ messages: [msg], cursor: pollStore.messages.length }),
+  );
+  pollStore.clients.length = 0;
+  res.sendStatus(200);
+});
 
-  pollClients.forEach((timeoutId) => clearTimeout(timeoutId));
-  pollClients.length = 0;
-  io.emit('message', msg);
+app.patch('/poll/message/:index/likes', (req, res) => {
+  console.log('http poll');
+  const msg = pollStore.messages[req.params.index];
+  if (!msg) return res.sendStatus(404);
+  msg.likes++;
+  pollStore.clients.forEach(({ res }) =>
+    res.json({
+      messages: [{ ...msg, index: Number(req.params.index) }],
+      cursor: pollStore.messages.length,
+    }),
+  );
+  pollStore.clients.length = 0;
+  res.sendStatus(200);
+});
 
-  res.json({ success: true });
+app.patch('/poll/message/:index/dislikes', (req, res) => {
+  const msg = pollStore.messages[req.params.index];
+  if (!msg) return res.sendStatus(404);
+  msg.dislikes++;
+  pollStore.clients.forEach(({ res }) =>
+    res.json({
+      messages: [{ ...msg, index: Number(req.params.index) }],
+      cursor: pollStore.messages.length,
+    }),
+  );
+  pollStore.clients.length = 0;
+  res.sendStatus(200);
 });
 
 io.on('connection', (socket) => {
-  socket.emit('history', socketChat);
+  socket.emit(
+    'history',
+    socketStore.messages.map((msg, index) => ({ ...msg, index })),
+  );
 
   socket.on('message', (msg) => {
-    socketChat.push(msg);
-    socket.broadcast.emit('message', msg);
+    socketStore.messages.push(msg);
+    socket.broadcast.emit('message', { ...msg, self: false });
+  });
 
-    pollClients.forEach((timeoutId) => clearTimeout(timeoutId));
-    pollClients.length = 0;
+  socket.on('react', ({ index, type }) => {
+    console.log('ws');
+    const msg = socketStore.messages[index];
+    if (!msg) return;
+    msg[type]++;
+    socket.broadcast.emit('react', { index, type, value: msg[type] });
   });
 });
 
-server.listen(3000, () => {
-  console.log('server running at http://localhost:3000');
-});
+httpServer.listen(3000, () => console.log('Server running on port: 3000'));
