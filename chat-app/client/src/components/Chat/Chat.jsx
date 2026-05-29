@@ -2,7 +2,7 @@ import { useState } from "react";
 import Message from "../Message/Message";
 import "./Chat.css";
 
-const Chat = ({ messages, sendMessage }) => {
+const Chat = ({ messages, sendMessage, reactToMessage }) => {
   const [input, setInput] = useState("");
 
   const handleSend = () => {
@@ -14,12 +14,16 @@ const Chat = ({ messages, sendMessage }) => {
   return (
     <div className="container">
       <ul className="messages">
-        {messages.map((message) => (
+        {messages.map((message, i) => (
           <Message
+            key={i}
+            i={i}
+            index={message.index}
             message={message.text}
             messageTime={message.time}
             likes={message.likes}
             dislikes={message.dislikes}
+            reactToMessage={reactToMessage}
           />
         ))}
       </ul>
