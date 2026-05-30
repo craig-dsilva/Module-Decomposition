@@ -5,14 +5,7 @@ const Nav = () => {
   const isHome = useMatch("/");
   return (
     <div className={`nav ${isHome ? "box" : "bar"}`}>
-      {!isHome ? (
-        <Link
-          style={isHome ? { marginBottom: "1rem" } : { marginRight: "1rem" }}
-          to="/"
-        >
-          Home
-        </Link>
-      ) : (
+      {isHome && (
         <p>
           This chat application uses 2 different protocols.
           <br /> Please select a protocol below.
@@ -28,7 +21,7 @@ const Nav = () => {
         to="/poll"
         style={isHome ? { marginBottom: "1rem" } : { marginRight: "1rem" }}
       >
-        Long Polling
+        Polling
       </Link>
     </div>
   );

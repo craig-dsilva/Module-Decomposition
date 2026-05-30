@@ -11,9 +11,21 @@
   display: flex;
   flex-direction: column;
   font-size: 2rem;
-  margin: 10% 25%;
 }
 
 .bar {
+  display: flex;
+  flex-direction: column;
   font-size: 2rem;
+}
+
+@media screen and (min-width: 800px) {
+  .box {
+    margin: 10% 25%;
+  }
+
+  .bar {
+    flex-direction: row;
+    margin: 0 40%;
+  }
 }

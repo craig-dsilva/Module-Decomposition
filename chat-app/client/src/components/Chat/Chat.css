@@ -1,9 +1,10 @@
 .messages {
   list-style: none;
+  padding: 0;
 }
 
 .chat-box {
-  position: fixed;
+  position: relative;
   bottom: 0;
   left: 0;
   right: 0;
@@ -29,10 +30,5 @@
 @media screen and (min-width: 800px) {
   .container {
     margin: auto 30%;
-  }
-  .chat-box {
-    height: 5vh;
-    left: 25%;
-    right: 25%;
   }
 }
