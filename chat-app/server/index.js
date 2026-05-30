@@ -14,6 +14,8 @@ app.use(express.json());
 const pollStore = JSON.parse(JSON.stringify(chat));
 const socketStore = JSON.parse(JSON.stringify(chat));
 
+app.get('/status', (req, res) => res.status(200).send('Server is running'));
+
 app.get('/poll/history', (req, res) => {
   res.json(pollStore);
 });

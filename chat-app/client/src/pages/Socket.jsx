@@ -3,7 +3,7 @@ import Chat from "../components/Chat/Chat";
 
 const Socket = () => {
   const { messages, sendMessage, reactToMessage } = useSocket(
-    "http://localhost:3000",
+    "https://craig-dsilva-chat-app-server.hosting.codeyourfuture.io/",
   );
   return (
     <Chat
