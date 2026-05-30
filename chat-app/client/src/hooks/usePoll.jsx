@@ -13,31 +13,6 @@ const useLongPoll = (url) => {
         cursorRef.current = history.length;
       });
 
-    const poll = async () => {
-      while (activeRef.current) {
-        try {
-          const res = await fetch(`${url}/poll?since=${cursorRef.current}`);
-          const data = await res.json();
-
-          if (data.messages.length > 0) {
-            data.messages.forEach((msg) => {
-              if (msg.index !== undefined) {
-                setMessages((prev) =>
-                  prev.map((m, i) => (i === msg.index ? { ...m, ...msg } : m)),
-                );
-              } else {
-                cursorRef.current = data.cursor;
-                setMessages((prev) => [...prev, msg]);
-              }
-            });
-          }
-        } catch {
-          await new Promise((r) => setTimeout(r, 2000));
-        }
-      }
-    };
-
-    poll();
     return () => {
       activeRef.current = false;
     };
