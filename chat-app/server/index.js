@@ -26,17 +26,11 @@ app.post('/poll/message', (req, res) => {
   res.sendStatus(200);
 });
 
-app.patch('/poll/message/:index/likes', (req, res) => {
+app.patch('/poll/message/:index', (req, res) => {
   const msg = pollStore[req.params.index];
+  const type = req.query.type;
   if (!msg) return res.sendStatus(404);
-  msg.likes++;
-  res.sendStatus(200);
-});
-
-app.patch('/poll/message/:index/dislikes', (req, res) => {
-  const msg = pollStore[req.params.index];
-  if (!msg) return res.sendStatus(404);
-  msg.dislikes++;
+  msg[type]++;
   res.sendStatus(200);
 });
 

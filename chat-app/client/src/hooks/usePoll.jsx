@@ -34,7 +34,7 @@ const useLongPoll = (url) => {
         i === index ? { ...msg, [type]: msg[type] + 1 } : msg,
       ),
     );
-    await fetch(`${url}/poll/message/${index}/${type}`, { method: "PATCH" });
+    await fetch(`${url}/poll/message/${index}?type=${type}`, { method: "PATCH" });
   };
 
   return { messages, sendMessage, reactToMessage };

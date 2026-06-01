@@ -3,7 +3,7 @@ import Chat from "../components/Chat/Chat";
 
 const Poll = () => {
   const { messages, sendMessage, reactToMessage } = usePoll(
-    "https://craig-dsilva-chat-app-server.hosting.codeyourfuture.io",
+    "http://localhost:3000",
   );
   return (
     <Chat
